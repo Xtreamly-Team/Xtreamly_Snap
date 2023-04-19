@@ -1,4 +1,4 @@
-import { OnRpcRequestHandler } from '@metamask/snaps-types';
+import { OnRpcRequestHandler } from "@metamask/snaps-types";
 import {
   copyable,
   divider,
@@ -6,7 +6,9 @@ import {
   panel,
   spinner,
   text,
-} from '@metamask/snaps-ui';
+} from "@metamask/snaps-ui";
+
+import { send_hello_to_canister } from "./canister";
 
 /**
  * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
@@ -24,40 +26,40 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
 }) => {
   let res = null;
   switch (request.method) {
-    case 'hello':
+    case "hello":
       return snap.request({
-        method: 'snap_dialog',
+        method: "snap_dialog",
         params: {
-          type: 'confirmation',
+          type: "confirmation",
           content: panel([
-            heading('Alpha'),
+            heading("Alpha"),
             spinner(),
-            copyable('Beta'),
+            copyable("Beta"),
             text(`Yellow, **${origin}**!`),
             divider(),
-            panel([heading('Beta'), text('Inside Panel')]),
+            panel([heading("Beta"), text("Inside Panel")]),
             divider(),
-            text('Look Ma!, I hacked a snap'),
+            text("Look Ma!, I hacked a snap"),
             text(
-              'But you can edit the snap source code to make it do something, if you want to!',
+              "But you can edit the snap source code to make it do something, if you want to!"
             ),
           ]),
         },
       });
-    case 'read_verifiable_data':
+    case "read_verifiable_data":
       res = await snap.request({
-        method: 'snap_dialog',
+        method: "snap_dialog",
         params: {
-          type: 'prompt',
-          placeholder: 'Enter your data',
-          content: panel([heading('Enter Verifiable Data'), divider()]),
+          type: "prompt",
+          placeholder: "Enter your data",
+          content: panel([heading("Enter Verifiable Data"), divider()]),
         },
       });
 
       snap.request({
-        method: 'snap_notify',
+        method: "snap_notify",
         params: {
-          type: 'inApp',
+          type: "inApp",
           message: `Data saved: ${res}`,
         },
       });
@@ -65,44 +67,61 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       let sample_did = `did:xtreamly:5123x1231x`;
 
       res = await snap.request({
-        method: 'snap_dialog',
+        method: "snap_dialog",
         params: {
-          type: 'alert',
+          type: "alert",
           content: panel([
-            heading('Data Saved'),
+            heading("Data Saved"),
             divider(),
-            text('You can copy this if you want to use it later manually'),
+            text("You can copy this if you want to use it later manually"),
             copyable(sample_did),
           ]),
         },
       });
       return res;
 
-    case 'notif':
-      res = await ethereum.request({
-        method: 'eth_gasPrice',
-        params: [],
-      });
-      console.log(res);
+    case "notif":
+      // res = await ethereum.request({
+      //   method: 'eth_gasPrice',
+      //   params: [],
+      // });
+      // console.log(res);
+      res = await send_hello_to_canister("http://127.0.0.1:4943");
+      // res = 'Hello World';
       return snap.request({
-        method: 'snap_notify',
+        method: "snap_notify",
         params: {
-          type: 'inApp',
-          message: `Gas Price = ${res}`,
+          type: "inApp",
+          message: `From Canister: ${res}`,
+        },
+      });
+    case "remote":
+      // res = await ethereum.request({
+      //   method: 'eth_gasPrice',
+      //   params: [],
+      // });
+      // console.log(res);
+      res = await send_hello_to_canister("https://dinkedpawn.com:443");
+      // res = 'Hello World';
+      return snap.request({
+        method: "snap_notify",
+        params: {
+          type: "inApp",
+          message: `From Canister: ${res}`,
         },
       });
     default:
-      throw new Error('Method not found.');
+      throw new Error("Method not found.");
   }
 };
 
 function deploySmartContractToEthereum(vc) {
   window.ethereum.request({
-    method: 'eth_sendTransaction',
+    method: "eth_sendTransaction",
     params: [
       {
-        from: '0x1322313478123897',
-        data: '0x81273127461082731',
+        from: "0x1322313478123897",
+        data: "0x81273127461082731",
       },
     ],
   });

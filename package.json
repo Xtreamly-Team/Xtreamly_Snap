@@ -56,5 +56,11 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "@dfinity/agent": "^0.15.5",
+    "@dfinity/identity-secp256k1": "^0.15.5",
+    "buffer": "^6.0.3",
+    "isomorphic-fetch": "^3.0.0"
   }
 }
