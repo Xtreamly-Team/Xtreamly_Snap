@@ -1,0 +1,32 @@
+{
+  "version": "0.3.1",
+  "description": "xtreamly is the best account abstraction provider for web3",
+  "proposedName": "xtreamly-aa-snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xtreamly-team/snap_demo"
+  },
+  "source": {
+    "shasum": "39dGOGmSYiOkrUBrkVb5dDFrcZd4KkHxjoITNVak8GQ=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "iconPath": "images/icon.svg",
+        "packageName": "xtreamly-aa-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "snap_dialog": {},
+    "snap_notify": {},
+    "snap_manageState": {},
+    "endowment:rpc": {
+      "dapps": true,
+      "snaps": false
+    },
+    "endowment:ethereum-provider": {},
+    "endowment:network-access": {}
+  },
+  "manifestVersion": "0.1"
+}
