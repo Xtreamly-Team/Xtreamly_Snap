@@ -8,7 +8,12 @@ import {
   text,
 } from "@metamask/snaps-ui";
 
-import { send_hello_to_canister } from "./canister";
+import {
+    register_vc_call_to_canister,
+  send_create_vc_self_presented_call_to_canister,
+  call_create_vc_self_presented,
+  send_greet_to_canister,
+} from "./canister";
 
 /**
  * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
@@ -81,27 +86,70 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       return res;
 
     case "notif":
-      // res = await ethereum.request({
-      //   method: 'eth_gasPrice',
-      //   params: [],
-      // });
-      // console.log(res);
-      res = await send_hello_to_canister("http://127.0.0.1:4943");
-      // res = 'Hello World';
-      return snap.request({
+      let userInput = await snap.request({
+        method: "snap_dialog",
+        params: {
+          type: "prompt",
+          placeholder: "Enter your data here",
+          content: panel([heading("Enter Verifiable Data"), divider()]),
+        },
+      });
+
+      await snap.request({
         method: "snap_notify",
         params: {
           type: "inApp",
-          message: `From Canister: ${res}`,
+          message: `${userInput}`,
         },
       });
+
+      let returnedVC = await send_create_vc_self_presented_call_to_canister(
+        "http://127.0.0.1:4943",
+        "ryjl3-tyaaa-aaaaa-aaaba-cai",
+        userInput
+      );
+
+      await snap.request({
+        method: "snap_notify",
+        params: {
+          type: "inApp",
+          message: `${returnedVC}`,
+        },
+      });
+
+      res = await snap.request({
+        method: "snap_dialog",
+        params: {
+          type: "alert",
+          content: panel([
+            heading("Data Saved"),
+            divider(),
+            text("You can copy this if you want to use it later manually"),
+            copyable(returnedVC),
+          ]),
+        },
+      });
+    // res = 'Hello World';
+    // return snap.request({
+    //   method: "snap_notify",
+    //   params: {
+    //     type: "inApp",
+    //     message: `From Canister: ${res}`,
+    //   },
+    // });
     case "remote":
       // res = await ethereum.request({
       //   method: 'eth_gasPrice',
       //   params: [],
       // });
       // console.log(res);
-      res = await send_hello_to_canister("https://dinkedpawn.com:443");
+      // res = await send_greet_to_canister("https://dinkedpawn.com:443");
+      res = await call_create_vc_self_presented(
+        "http://127.0.0.1:4943",
+        "ryjl3-tyaaa-aaaaa-aaaba-cai",
+        "age: 30",
+        "QQQQ",
+      );
       // res = 'Hello World';
       return snap.request({
         method: "snap_notify",

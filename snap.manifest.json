@@ -1,5 +1,5 @@
 {
-  "version": "0.3.1",
+  "version": "0.3.3",
   "description": "basic_snap",
   "proposedName": "basic_snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/xtreamly-team/snap_demo"
   },
   "source": {
-    "shasum": "Kf6DVyFj+10UfokVOR6BfqC1LJ+NbluCyZuLNOwfedA=",
+    "shasum": "f/iPmQcYnWZWPbQfdH8iJho07ewpusNfzvW7dNvcJ4o=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

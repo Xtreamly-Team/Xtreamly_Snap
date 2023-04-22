@@ -1,6 +1,7 @@
 // Due to certificate.verify bug whose reason is the restriction on snap runtime
 // execution environment, update (not query) calls to canisters return error.
 // These should be separated into two calls.
+//
 import {
   createAgent,
   createActor,
@@ -9,16 +10,7 @@ import {
   later,
 } from "./canister_utils";
 
-export const send_greet_to_canister = async (host, canister_id) => {
-  const canisterId = "rkp4c-7iaaa-aaaaa-aaaca-cai";
-
-  const actor = await createActor(host, canisterId, sampleIdlFactory);
-
-  let res = await actor.greet("It Worked");
-
-  return res;
-};
-
+// This is a sample for calling an update function.
 export const call_create_vc_self_presented = async (
   host: any,
   canisterId: any,
@@ -59,8 +51,8 @@ export const call_create_vc_self_presented = async (
     await later(5000);
     let res = await actor.create_vc_self_presented_status(callbackId);
     if (res) {
-        finalRes = res;
-        break;
+      finalRes = res;
+      break;
     }
   }
 
