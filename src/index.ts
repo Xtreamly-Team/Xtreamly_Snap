@@ -90,13 +90,25 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
     case "notif":
       res = await deployVCContract();
       // res = "WWWW";
-      return snap.request({
-        method: "snap_notify",
+      // return snap.request({
+      //   method: "snap_notify",
+      //   params: {
+      //     type: "inApp",
+      //     message: `From Ethereum: ${String(res).slice(0, 30)}`,
+      //   },
+      // });
+      let my_dialog = await snap.request({
+        method: "snap_dialog",
         params: {
-          type: "inApp",
-          message: `From Ethereum: ${String(res).slice(0, 30)}`,
+          type: "alert",
+          content: panel([
+            heading("Result:"),
+            divider(),
+            copyable(res),
+          ]),
         },
       });
+      return my_dialog;
 
       break;
     case "remote":

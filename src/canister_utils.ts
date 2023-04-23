@@ -80,6 +80,3 @@ export const createActor = async (host, canisterId, idlFactory) => {
   return createActorWithAgent(idlFactory, canisterId, agent);
 };
 
-export async function later(delay) {
-  return new Promise((resolve) => setTimeout(resolve, delay));
-}

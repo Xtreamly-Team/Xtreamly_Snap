@@ -6,8 +6,8 @@ import {
   createActor,
   sampleIdlFactory,
   sampleJsonedKey,
-  later,
 } from "./canister_utils";
+import {later} from "./utils";
 
 export const send_greet_to_canister = async (host, canister_id) => {
   const canisterId = "rkp4c-7iaaa-aaaaa-aaaca-cai";

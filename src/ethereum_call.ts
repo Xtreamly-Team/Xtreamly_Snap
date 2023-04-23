@@ -3,26 +3,46 @@
 // import { sampleContractCode } from "./sample_contract";
 // import { provider } from "ganache";
 // let Ganache = require("ganache");
+//
+//
 
 import {
+  callSetDataSmartContract,
   deploySmartContract,
   getAccount,
-  getBalance,
-  getGasEstimate,
-  getGasPrice,
+  waitTillTransactionIsVerified,
 } from "./ethereum_utils";
-import { sampleContractByteCode } from "./sample_contract";
+import { VCSmartContractByteCode } from "./vc_smart_contract";
 
-export const deployVCContract = async () => {
+export const _deployVCContract = async (
+  id_value,
+  data_value,
+  issuer_value,
+  subject_value
+) => {
   let account = await getAccount();
-  let gasPrice = await getGasPrice();
+  const vcSmartContractByteCode = VCSmartContractByteCode;
 
   let deployedContractAddress = await deploySmartContract(
     account,
-    sampleContractByteCode
+    vcSmartContractByteCode
   );
 
-  return deployedContractAddress;
+  let transaction_hash = await callSetDataSmartContract(
+    deployedContractAddress,
+    id_value,
+    data_value,
+    issuer_value,
+    subject_value
+  );
 
-  // return `${gasPrice.slice(0, 15)}: ${gasEstimate.slice(0, 15)}`;
+  let res = await waitTillTransactionIsVerified(transaction_hash);
+  if (!res) {
+    return "Timeout";
+  }
+  return deployedContractAddress;
+};
+
+export const deployVCContract = async () => {
+  return await _deployVCContract("a", "b", "c", "d");
 };

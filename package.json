@@ -62,9 +62,12 @@
     "@dfinity/candid": "^0.15.5",
     "@dfinity/identity-secp256k1": "^0.15.5",
     "@dfinity/principal": "^0.15.5",
+    "@metamask/abi-utils": "^1.2.0",
     "@metamask/detect-provider": "^2.0.0",
+    "@metamask/utils": "^5.0.1",
     "buffer": "^6.0.3",
     "ganache": "^7.8.0",
-    "isomorphic-fetch": "^3.0.0"
+    "isomorphic-fetch": "^3.0.0",
+    "keccak256": "^1.0.6"
   }
 }
