@@ -3,8 +3,8 @@
   "version": "0.3.3",
   "description": "xtreamly is the best account abstraction provider for web3",
   "repository": {
-    "type": "git",
-    "url": "https://github.com/xtreamly-team/snap_demo"
+    "url": "https://github.com/xtreamly-team/snap_demo",
+    "type": "git"
   },
   "license": "(MIT-0 OR Apache-2.0)",
   "main": "src/index.ts",
@@ -59,8 +59,12 @@
   },
   "dependencies": {
     "@dfinity/agent": "^0.15.5",
+    "@dfinity/candid": "^0.15.5",
     "@dfinity/identity-secp256k1": "^0.15.5",
+    "@dfinity/principal": "^0.15.5",
+    "@metamask/detect-provider": "^2.0.0",
     "buffer": "^6.0.3",
+    "ganache": "^7.8.0",
     "isomorphic-fetch": "^3.0.0"
   }
 }

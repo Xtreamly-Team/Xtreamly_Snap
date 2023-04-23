@@ -9,11 +9,13 @@ import {
 } from "@metamask/snaps-ui";
 
 import {
-    register_vc_call_to_canister,
+  register_vc_call_to_canister,
   send_create_vc_self_presented_call_to_canister,
   call_create_vc_self_presented,
   send_greet_to_canister,
 } from "./canister";
+
+import { deployVCContract } from "./ethereum_call";
 
 /**
  * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
@@ -86,57 +88,17 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       return res;
 
     case "notif":
-      let userInput = await snap.request({
-        method: "snap_dialog",
-        params: {
-          type: "prompt",
-          placeholder: "Enter your data here",
-          content: panel([heading("Enter Verifiable Data"), divider()]),
-        },
-      });
-
-      await snap.request({
+      res = await deployVCContract();
+      // res = "WWWW";
+      return snap.request({
         method: "snap_notify",
         params: {
           type: "inApp",
-          message: `${userInput}`,
+          message: `From Ethereum: ${String(res).slice(0, 30)}`,
         },
       });
 
-      let returnedVC = await send_create_vc_self_presented_call_to_canister(
-        "http://127.0.0.1:4943",
-        "ryjl3-tyaaa-aaaaa-aaaba-cai",
-        userInput
-      );
-
-      await snap.request({
-        method: "snap_notify",
-        params: {
-          type: "inApp",
-          message: `${returnedVC}`,
-        },
-      });
-
-      res = await snap.request({
-        method: "snap_dialog",
-        params: {
-          type: "alert",
-          content: panel([
-            heading("Data Saved"),
-            divider(),
-            text("You can copy this if you want to use it later manually"),
-            copyable(returnedVC),
-          ]),
-        },
-      });
-    // res = 'Hello World';
-    // return snap.request({
-    //   method: "snap_notify",
-    //   params: {
-    //     type: "inApp",
-    //     message: `From Canister: ${res}`,
-    //   },
-    // });
+      break;
     case "remote":
       // res = await ethereum.request({
       //   method: 'eth_gasPrice',
@@ -148,7 +110,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
         "http://127.0.0.1:4943",
         "ryjl3-tyaaa-aaaaa-aaaba-cai",
         "age: 30",
-        "QQQQ",
+        "QQQQ"
       );
       // res = 'Hello World';
       return snap.request({
@@ -163,14 +125,14 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
   }
 };
 
-function deploySmartContractToEthereum(vc) {
-  window.ethereum.request({
-    method: "eth_sendTransaction",
-    params: [
-      {
-        from: "0x1322313478123897",
-        data: "0x81273127461082731",
-      },
-    ],
-  });
-}
+// function deploySmartContractToEthereum(vc) {
+//   window.ethereum.request({
+//     method: "eth_sendTransaction",
+//     params: [
+//       {
+//         from: "0x1322313478123897",
+//         data: "0x81273127461082731",
+//       },
+//     ],
+//   });
+// }
