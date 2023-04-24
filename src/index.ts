@@ -89,49 +89,36 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
 
     case "notif":
       res = await deployVCContract();
-      // res = "WWWW";
-      // return snap.request({
-      //   method: "snap_notify",
-      //   params: {
-      //     type: "inApp",
-      //     message: `From Ethereum: ${String(res).slice(0, 30)}`,
-      //   },
-      // });
+
       let my_dialog = await snap.request({
         method: "snap_dialog",
         params: {
           type: "alert",
-          content: panel([
-            heading("Result:"),
-            divider(),
-            copyable(res),
-          ]),
+          content: panel([heading("Result:"), divider(), copyable(res)]),
         },
       });
       return my_dialog;
 
       break;
     case "remote":
-      // res = await ethereum.request({
-      //   method: 'eth_gasPrice',
-      //   params: [],
-      // });
-      // console.log(res);
-      // res = await send_greet_to_canister("https://dinkedpawn.com:443");
-      res = await call_create_vc_self_presented(
+      const did = await call_create_vc_self_presented(
         "http://127.0.0.1:4943",
         "ryjl3-tyaaa-aaaaa-aaaba-cai",
         "age: 30",
         "QQQQ"
       );
-      // res = 'Hello World';
-      return snap.request({
-        method: "snap_notify",
+
+      const m_dialog = await snap.request({
+        method: "snap_dialog",
         params: {
-          type: "inApp",
-          message: `From Canister: ${res}`,
+          type: "alert",
+          content: panel([heading("Result:"), divider(), copyable(did)]),
         },
       });
+
+
+
+      return my_dialog;
     default:
       throw new Error("Method not found.");
   }
