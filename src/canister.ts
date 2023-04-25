@@ -7,6 +7,7 @@ import {
   sampleIdlFactory,
   sampleJsonedKey,
 } from "./canister_utils";
+import { VCModel } from "./models";
 import { later } from "./utils";
 
 export const send_greet_to_canister = async (host, canister_id) => {
@@ -17,6 +18,36 @@ export const send_greet_to_canister = async (host, canister_id) => {
   let res = await actor.greet("It Worked");
 
   return res;
+};
+
+export const call_present_did_address = async (
+  host,
+  canisterId,
+  did,
+  contractAddress
+) => {
+  const idlFactory = ({ IDL }) => {
+    return IDL.Service({
+      present_did_address : IDL.Func([IDL.Text, IDL.Text], [IDL.Text], []),
+    });
+  };
+  let actor = await createActor(host, canisterId, idlFactory);
+  try {
+    let res = await actor.present_did_address(
+        did,
+        contractAddress
+    );
+  } catch {
+    // Won't do anything here since the error is not related to us, its related
+    // to snap not being able to verify certificate
+  }
+
+
+  // TODO: Add a status check call when the canister present_did_address_status
+  // is available. For now we simulate it by waiting 5 seconds
+  await later(5000);
+  return "Saved Succssfully";
+
 };
 
 export const call_create_vc_self_presented = async (
@@ -74,6 +105,8 @@ export const call_create_vc_self_presented = async (
 
   const did = proof["verification_method"];
 
-  return did;
+  const data = vc["credential_subject"]["data"];
+  const issuer = vc["issuer"];
 
+  return new VCModel(finalRes, vc, proof, did, data, issuer);
 };

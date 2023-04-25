@@ -14,7 +14,13 @@ import {
 } from "./ethereum_utils";
 import { VCSmartContractByteCode } from "./vc_smart_contract";
 
-export const _deployVCContract = async (
+
+// For now:
+// id_value = whole response we got from the self_presented call
+// data_value = 'data' part of vc
+// issuer_value = 'issuer' part of vc
+// subject_value = 'SUBJECT' constant string
+export const deployVCContract = async (
   id_value,
   data_value,
   issuer_value,
@@ -43,6 +49,3 @@ export const _deployVCContract = async (
   return deployedContractAddress;
 };
 
-export const deployVCContract = async () => {
-  return await _deployVCContract("a", "b", "c", "d");
-};

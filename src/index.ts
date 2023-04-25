@@ -13,7 +13,9 @@ import {
   send_create_vc_self_presented_call_to_canister,
   call_create_vc_self_presented,
   send_greet_to_canister,
+  call_present_did_address,
 } from "./canister";
+import { saveDataScenario } from "./controller";
 
 import { deployVCContract } from "./ethereum_call";
 
@@ -88,7 +90,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       return res;
 
     case "notif":
-      res = await deployVCContract();
+      // res = await deployVCContract();
 
       let my_dialog = await snap.request({
         method: "snap_dialog",
@@ -101,37 +103,12 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
 
       break;
     case "remote":
-      const did = await call_create_vc_self_presented(
+      await saveDataScenario(
         "http://127.0.0.1:4943",
-        "ryjl3-tyaaa-aaaaa-aaaba-cai",
-        "age: 30",
-        "QQQQ"
+        "ryjl3-tyaaa-aaaaa-aaaba-cai"
       );
-
-      const m_dialog = await snap.request({
-        method: "snap_dialog",
-        params: {
-          type: "alert",
-          content: panel([heading("Result:"), divider(), copyable(did)]),
-        },
-      });
-
-
-
-      return my_dialog;
+      break;
     default:
       throw new Error("Method not found.");
   }
 };
-
-// function deploySmartContractToEthereum(vc) {
-//   window.ethereum.request({
-//     method: "eth_sendTransaction",
-//     params: [
-//       {
-//         from: "0x1322313478123897",
-//         data: "0x81273127461082731",
-//       },
-//     ],
-//   });
-// }
