@@ -1,20 +1,7 @@
-Install snaps cli 
-npm install -g @metamask/snaps-CLI
+A snap that communicates both with Ethereum to save data and ICP canisters for the
+whole orchestration. It sits inside user wallet and handles UI. For now it has
+utils for connecting to both Ethereum and ICP as well as porcelain commands as
+saveData and loadData scenarios.
 
-Run yarn in root directory
-
-Use mm-snap commands / yarn scripts to build / evaluate code and manifest. Also
-to test, use 'serve' command to make it available as a local snap.
-For release deployment, make sure the package.json and manifest.json are in sync
-(name, version, ...) and if so, publish the whole package using npm publish. Use
-the returned npm:<Name> as the snap identifier in your daap client (browser).
-
-
-# TypeScript Example Snap
-
-This Snap demonstrates how to develop a Snap with TypeScript.
-
-## Notes
-
-- Babel is used for transpiling TypeScript to JavaScript, so when building with the CLI,
-  `transpilationMode` must be set to `localOnly` (default) or `localAndDeps`.
+Use yarn install followed by mm-snap build for building and mm-snap serve for
+local deployment. For production you need to publish it on the npm.
