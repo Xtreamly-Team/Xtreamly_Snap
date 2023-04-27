@@ -1,5 +1,6 @@
 import {
   call_create_vc_self_presented,
+  call_get_vc,
   call_present_did_address,
 } from "./canister";
 import { deployVCContract } from "./ethereum_call";
@@ -10,6 +11,31 @@ import {
   userDataPromptDialog,
   waitingDialog,
 } from "./ui/input_data";
+
+export const getDataScenario = async (host, canister_id) => {
+  const randomCallbackNumber = Math.floor(Math.random() * 1_000_000);
+
+  const userInputData = await userDataPromptDialog(
+    "VC to get",
+    "Enter DID of the data that you want to give Dapp access to",
+    "did:xtreamly:123123..."
+  );
+
+  let res = await call_get_vc(
+    host,
+    canister_id,
+    userInputData,
+    "123",
+    "123",
+    `Canister_Function_Callback_Number_${randomCallbackNumber.toString()}`
+  );
+
+  const resString = String(res);
+
+  await copyableResultDialog("Result", "result", res);
+
+  return resString;
+};
 
 export const saveDataScenario = async (host, canister_id) => {
   // TODO: Make sure this random call doesn't collide with other calls
@@ -65,10 +91,4 @@ export const saveDataScenario = async (host, canister_id) => {
     `Blockchain Address: `,
     `${contractAddress}`
   );
-
-  // return await copyableResultDialog(
-  //   "Test",
-  //   "Saved To Canister",
-  //   sentDIDAddressPair
-  // );
 };

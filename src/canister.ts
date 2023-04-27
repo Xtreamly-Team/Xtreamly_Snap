@@ -20,6 +20,66 @@ export const send_greet_to_canister = async (host, canister_id) => {
   return res;
 };
 
+export const call_get_vc = async (
+  host,
+  canisterId,
+  did,
+  dapp_public,
+  proxy_public,
+  callbackId
+) => {
+  let idlFactory = ({ IDL }) => {
+    return IDL.Service({
+      get_vc: IDL.Func(
+        [IDL.Text, IDL.Text, IDL.Text, IDL.Text],
+        [IDL.Text],
+        []
+      ),
+    });
+  };
+  let actor = await createActor(host, canisterId, idlFactory);
+
+  try {
+    let res = await actor.get_vc(
+      did,
+      dapp_public,
+      proxy_public,
+      callbackId
+    );
+  } catch {
+    // Won't do anything here since the error is not related to us, its related
+    // to snap not being able to verify certificate
+  }
+
+  idlFactory = ({ IDL }) => {
+    return IDL.Service({
+      get_vc_status: IDL.Func(
+        [IDL.Text],
+        [IDL.Text],
+        ["query"]
+      ),
+    });
+  };
+
+  let finalRes = "";
+
+  actor = await createActor(host, canisterId, idlFactory);
+  while (true) {
+    await later(3000);
+    let res = await actor.get_vc_status(callbackId);
+    if (res) {
+      finalRes = res;
+      break;
+    }
+  }
+
+  return finalRes;
+
+};
+
+
+
+
 export const call_present_did_address = async (
   host,
   canisterId,
@@ -28,26 +88,21 @@ export const call_present_did_address = async (
 ) => {
   const idlFactory = ({ IDL }) => {
     return IDL.Service({
-      present_did_address : IDL.Func([IDL.Text, IDL.Text], [IDL.Text], []),
+      present_did_address: IDL.Func([IDL.Text, IDL.Text], [IDL.Text], []),
     });
   };
   let actor = await createActor(host, canisterId, idlFactory);
   try {
-    let res = await actor.present_did_address(
-        did,
-        contractAddress
-    );
+    let res = await actor.present_did_address(did, contractAddress);
   } catch {
     // Won't do anything here since the error is not related to us, its related
     // to snap not being able to verify certificate
   }
 
-
   // TODO: Add a status check call when the canister present_did_address_status
   // is available. For now we simulate it by waiting 5 seconds
   await later(5000);
   return "Saved Succssfully";
-
 };
 
 export const call_create_vc_self_presented = async (
@@ -87,7 +142,7 @@ export const call_create_vc_self_presented = async (
 
   actor = await createActor(host, canisterId, idlFactory);
   while (true) {
-    await later(5000);
+    await later(3000);
     let res = await actor.create_vc_self_presented_status(callbackId);
     if (res) {
       finalRes = res;

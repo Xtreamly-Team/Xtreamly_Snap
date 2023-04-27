@@ -15,7 +15,7 @@ import {
   send_greet_to_canister,
   call_present_did_address,
 } from "./canister";
-import { saveDataScenario } from "./controller";
+import { getDataScenario, saveDataScenario } from "./controller";
 
 import { deployVCContract } from "./ethereum_call";
 
@@ -90,24 +90,17 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       return res;
 
     case "notif":
-      // res = await deployVCContract();
-
-      let my_dialog = await snap.request({
-        method: "snap_dialog",
-        params: {
-          type: "alert",
-          content: panel([heading("Result:"), divider(), copyable(res)]),
-        },
-      });
-      return my_dialog;
-
-      break;
-    case "remote":
-      await saveDataScenario(
-        "http://127.0.0.1:4943",
+      return await getDataScenario(
+        // "http://127.0.0.1:4943",
+        "https://dinkedpawn.com",
         "ryjl3-tyaaa-aaaaa-aaaba-cai"
       );
-      break;
+    case "remote":
+      return await saveDataScenario(
+        // "http://127.0.0.1:4943",
+        "https://dinkedpawn.com",
+        "ryjl3-tyaaa-aaaaa-aaaba-cai"
+      );
     default:
       throw new Error("Method not found.");
   }
