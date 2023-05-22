@@ -15,7 +15,11 @@ import {
   send_greet_to_canister,
   call_present_did_address,
 } from "./canister";
-import { getDataScenario, saveDataScenario } from "./controller";
+import {
+  getDataScenario,
+  getSteamDataScenario,
+  saveDataScenario,
+} from "./controller";
 
 import { deployVCContract } from "./ethereum_call";
 
@@ -88,6 +92,9 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
         },
       });
       return res;
+
+    case "steam":
+      return await getSteamDataScenario();
 
     case "notif":
       return await getDataScenario(

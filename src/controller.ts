@@ -8,9 +8,11 @@ import {
   announcementDialog,
   copyableDoubleResultDialog,
   copyableResultDialog,
+  dynamicCopyableResultDialog,
   userDataPromptDialog,
   waitingDialog,
 } from "./ui/input_data";
+import { getSteamOwnedGames } from "./web2_gaming";
 
 export const getDataScenario = async (host, canister_id) => {
   const randomCallbackNumber = Math.floor(Math.random() * 1_000_000);
@@ -90,5 +92,27 @@ export const saveDataScenario = async (host, canister_id) => {
     `${vcModel.did}`,
     `Blockchain Address: `,
     `${contractAddress}`
+  );
+};
+
+export const getSteamDataScenario = async () => {
+  const rawResponse = await getSteamOwnedGames();
+  const res = rawResponse["response"];
+  console.log(res);
+  const gameCount = res["game_count"];
+  const games = [...res["games"].map((e) => `${e.name}`)];
+
+  const gamesJoined = games.join(`-${String.fromCharCode(160)}-`);
+
+  await dynamicCopyableResultDialog(
+    "Steam Games",
+    "Here are the results of \n Steam inquiry",
+    ["Total game count:", "Games:"],
+    [`${gameCount}`, ...games]
+  );
+
+  return await announcementDialog(
+    "Congratulations",
+    `You're a real gamer (have more than 100 games), so you can enter without having our NFT`
   );
 };

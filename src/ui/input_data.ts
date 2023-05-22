@@ -82,3 +82,31 @@ export const copyableDoubleResultDialog = async (
     },
   });
 };
+
+export const dynamicCopyableResultDialog = async (
+  title,
+  body,
+  labelList,
+  resultList
+) => {
+  const listComponents = [];
+
+  for (let i = 0; i < resultList.length; i++) {
+    if (i in labelList) {
+      listComponents.push(text(labelList[i]));
+    }
+    listComponents.push(copyable(resultList[i]));
+  }
+  const d_dialog = await snap.request({
+    method: "snap_dialog",
+    params: {
+      type: "alert",
+      content: panel([
+        heading(title),
+        divider(),
+        text(body),
+        ...listComponents,
+      ]),
+    },
+  });
+};
